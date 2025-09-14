@@ -1,159 +1,202 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { getUserProfile } from '@/app/actions/user-profile'
-import { getDailyLogs } from '@/app/actions/daily-log'
-import { format, addDays, differenceInDays } from 'date-fns'
-import { Progress } from '@/components/ui/progress'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { CalendarCheck, Candy, LineChart, TrendingDown } from 'lucide-react'
+import { getProfile } from "@/app/actions/onboarding";
+import { getDailyLogs } from "@/app/actions/daily-log";
+import { format, differenceInDays } from "date-fns";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+// Import local components
+// Import local components
+import ChallengeProgress from "./challenge-progress";
+import SugarIntakeChart from "./sugar-intake-chart";
+// Simple placeholder components to prevent errors
+const MoodEnergyCorrelation = () => (
+  <div className="p-4 border rounded-lg">
+    <h3 className="font-medium mb-2">Mood & Energy</h3>
+    <p className="text-sm text-muted-foreground">Mood and energy correlation chart will be displayed here.</p>
+  </div>
+);
 
-export default async function DashboardPage() {
-  const userProfile = await getUserProfile()
-  const dailyLogs = await getDailyLogs()
+interface WeightTrackerProps {
+  logs: any[];
+  initialWeight?: number;
+  goalWeight?: number;
+}
+
+const WeightTracker = ({ logs, initialWeight, goalWeight }: WeightTrackerProps) => (
+  <div className="p-4 border rounded-lg">
+    <h3 className="font-medium mb-2">Weight Tracker</h3>
+    {initialWeight && (
+      <p className="text-sm">
+        Starting weight: {initialWeight}kg
+        {goalWeight ? ` | Goal: ${goalWeight}kg` : ''}
+      </p>
+    )}
+    <p className="text-sm text-muted-foreground mt-2">
+      {logs.length > 0 
+        ? `Latest weight: ${logs[0].weight_kg || 'N/A'}kg`
+        : 'No weight entries yet.'}
+    </p>
+  </div>
+);
+import { redirect } from "next/navigation";
+
+export default async function Dashboard() {
+  const { profile, error } = await getProfile();
+
+  // Handle errors or redirect to onboarding if no profile exists
+  if (error || !profile) {
+    console.error('Error fetching profile:', error);
+    redirect("/onboarding");
+  }
+
+  // Get daily logs for the user
+  const dailyLogs = await getDailyLogs();
+
+  // Calculate days into challenge (default to today if no start date)
+  const startDate = profile.challenge_start_date 
+    ? new Date(profile.challenge_start_date) 
+    : new Date();
+  const today = new Date();
   
-  // Calculate challenge progress
-  const startDate = userProfile?.challenge_start_date 
-    ? new Date(userProfile.challenge_start_date) 
-    : new Date()
-  const endDate = addDays(startDate, 14) // 2-week challenge
-  const today = new Date()
-  const totalDays = 14
-  const daysElapsed = Math.min(differenceInDays(today, startDate) + 1, totalDays)
-  const progressPercentage = Math.round((daysElapsed / totalDays) * 100)
+  // Calculate progress
+  const totalDays = 14; // 2-week challenge
+  const daysCompleted = Math.min(differenceInDays(today, startDate), totalDays);
+  const progressPercentage = Math.round((daysCompleted / totalDays) * 100);
   
+  // Calculate end date (14 days from start)
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + totalDays);
+
   // Calculate stats
-  const sugarIntakeTotal = dailyLogs.reduce((sum, log) => sum + log.sugar_intake_grams, 0)
-  const sugarIntakeAvg = dailyLogs.length > 0 ? Math.round(sugarIntakeTotal / dailyLogs.length) : 0
-  const latestLog = dailyLogs[0] // Logs are ordered by date desc
-  
+  const totalSugarIntake = dailyLogs.reduce(
+    (total, log) => total + (log.sugar_intake_grams || 0),
+    0
+  );
+  const averageSugarIntake =
+    dailyLogs.length > 0 ? totalSugarIntake / dailyLogs.length : 0;
+
+  // Get latest log metrics
+  const latestLog = dailyLogs[0]; // Logs are ordered by date desc
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Link href="/dashboard/log">
-          <Button>Log Today</Button>
-        </Link>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Track your progress in the 2-week no sugar challenge
+        </p>
       </div>
-      
+
+      {/* Challenge Progress */}
       <Card>
         <CardHeader>
           <CardTitle>Challenge Progress</CardTitle>
           <CardDescription>
-            {daysElapsed} of {totalDays} days completed
+            Day {daysCompleted} of 14 in your no sugar challenge
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>
+                Started: {format(startDate, "PPP")}
+              </span>
+              <span>
+                Ends: {format(endDate, "PPP")}
+              </span>
+            </div>
             <Progress value={progressPercentage} className="h-2" />
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Started: {format(startDate, 'MMM d, yyyy')}</span>
-              <span>Ends: {format(endDate, 'MMM d, yyyy')}</span>
+              <span>{daysCompleted} days complete</span>
+              <span>{totalDays - daysCompleted} days remaining</span>
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
+      {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Days Logged</CardTitle>
-            <CalendarCheck className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="pb-2">
+            <CardDescription>Average Sugar Intake</CardDescription>
+            <CardTitle className="text-3xl">
+              {averageSugarIntake.toFixed(1)}g
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Weight Change</CardDescription>
+            <CardTitle className="text-3xl">
+              {latestLog && profile.initial_weight_kg
+                ? (latestLog.weight_kg! - profile.initial_weight_kg).toFixed(1)
+                : "0"}
+              kg
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Latest Mood Rating</CardDescription>
+            <CardTitle className="text-3xl">
+              {latestLog?.mood_rating || "-"}/10
+            </CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Latest Energy Level</CardDescription>
+            <CardTitle className="text-3xl">
+              {latestLog?.energy_rating || "-"}/10
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+
+      {/* Charts - placeholders for now */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Sugar Intake Over Time</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dailyLogs.length}</div>
-            <p className="text-xs text-muted-foreground">
-              out of {daysElapsed} days
-            </p>
+            <SugarIntakeChart logs={dailyLogs} />
           </CardContent>
         </Card>
-        
+
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Sugar Intake</CardTitle>
-            <Candy className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Weight Tracking</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{sugarIntakeAvg}g</div>
-            <p className="text-xs text-muted-foreground">
-              per day
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Latest Sugar Intake</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {latestLog ? `${latestLog.sugar_intake_grams}g` : 'N/A'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {latestLog ? format(new Date(latestLog.date), 'MMM d, yyyy') : 'No logs yet'}
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">View Progress</CardTitle>
-            <LineChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="flex items-center justify-center pt-4">
-            <Link href="/dashboard/progress">
-              <Button variant="outline">See Details</Button>
-            </Link>
+            <WeightTracker
+              logs={dailyLogs}
+              initialWeight={profile.initial_weight_kg}
+              goalWeight={profile.goal_weight_kg}
+            />
           </CardContent>
         </Card>
       </div>
-      
+
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Mood & Energy Correlation</CardTitle>
           <CardDescription>
-            Your recent logs and progress
+            See how your mood and energy levels are affected by sugar intake
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {dailyLogs.length > 0 ? (
-            <div className="space-y-4">
-              {dailyLogs.slice(0, 5).map((log) => (
-                <div key={log.id} className="flex items-center justify-between border-b pb-2">
-                  <div>
-                    <p className="font-medium">{format(new Date(log.date), 'EEEE, MMM d')}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Sugar: {log.sugar_intake_grams}g
-                      {log.weight_kg && ` • Weight: ${log.weight_kg}kg`}
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    {log.mood_rating && (
-                      <div className="text-sm">
-                        Mood: {log.mood_rating}/10
-                      </div>
-                    )}
-                    {log.energy_rating && (
-                      <div className="text-sm">
-                        Energy: {log.energy_rating}/10
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-6">
-              <p className="text-muted-foreground">No logs yet. Start tracking your progress!</p>
-              <div className="mt-4">
-                <Link href="/dashboard/log">
-                  <Button>Add First Log</Button>
-                </Link>
-              </div>
-            </div>
-          )}
+          <MoodEnergyCorrelation />
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

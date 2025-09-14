@@ -1,28 +1,8 @@
-import { createBrowserClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
+// This is a bridge file that re-exports from the appropriate client/server files
+// to maintain backward compatibility with existing imports
 
-export const createSupabaseServerClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase URL and Anon Key must be defined')
-  }
-  
-  return createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      persistSession: false,
-    },
-  })
-}
+// Re-export from server file
+export { createSupabaseServerClient } from './supabase-server'
 
-export const createSupabaseBrowserClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase URL and Anon Key must be defined')
-  }
-  
-  return createBrowserClient(supabaseUrl, supabaseKey)
-}
+// Re-export from client file
+export { createSupabaseBrowserClient } from './supabase-client'
