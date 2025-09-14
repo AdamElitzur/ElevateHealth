@@ -1,102 +1,248 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col min-h-screen">
+      <header className="border-b bg-background">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="text-xl font-bold">ElevateHealth</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/sign-in">
+              <Button variant="outline" size="sm">
+                Sign in
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button size="sm">Join Challenge</Button>
+            </Link>
+          </div>
         </div>
+      </header>
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-20 md:py-32 bg-gradient-to-b from-background to-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+                  Take the 2-Week No Sugar Challenge
+                </h1>
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  Transform your health, reduce cravings, and boost energy by
+                  eliminating sugar for just 14 days.
+                </p>
+              </div>
+              <div className="space-x-4">
+                <Link href="/sign-up">
+                  <Button size="lg" className="mt-4">
+                    Start Your Challenge
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-12 md:py-24 bg-background">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+                  How It Works
+                </h2>
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  Our simple 3-step process to help you break free from sugar
+                  addiction
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-12 mt-12">
+              <Card className="flex flex-col items-center text-center">
+                <CardContent className="pt-6">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3 text-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6"
+                    >
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">1. Create Your Profile</h3>
+                  <p className="text-muted-foreground">
+                    Sign up and complete your profile with basic information and
+                    a photo for biological age calculation.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="flex flex-col items-center text-center">
+                <CardContent className="pt-6">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3 text-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6"
+                    >
+                      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" />
+                      <path d="M12 8v8" />
+                      <path d="M8 12h8" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">2. Log Daily Progress</h3>
+                  <p className="text-muted-foreground">
+                    Track your sugar intake, weight, mood, energy levels, and
+                    more every day for 14 days.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="flex flex-col items-center text-center">
+                <CardContent className="pt-6">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3 text-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6"
+                    >
+                      <path d="m12 14 4-4" />
+                      <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                      <path d="M16 16v4" />
+                      <path d="M12 14v10" />
+                      <path d="M8 16v4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold">3. See Your Results</h3>
+                  <p className="text-muted-foreground">
+                    Visualize your progress and see how eliminating sugar
+                    impacts your health and wellbeing.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Section */}
+        <section className="py-12 md:py-24 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+                  Benefits of Going Sugar-Free
+                </h2>
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  Experience these transformative changes in just 14 days
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-12 mt-12">
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-xl font-bold">Reduced Cravings</h3>
+                <p className="text-muted-foreground">
+                  Break the cycle of sugar addiction and experience fewer
+                  cravings for sweets and processed foods.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-xl font-bold">Increased Energy</h3>
+                <p className="text-muted-foreground">
+                  Say goodbye to energy crashes and enjoy stable, sustained
+                  energy throughout the day.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-xl font-bold">Better Sleep</h3>
+                <p className="text-muted-foreground">
+                  Experience improved sleep quality and wake up feeling more
+                  refreshed.
+                </p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <h3 className="text-xl font-bold">Weight Management</h3>
+                <p className="text-muted-foreground">
+                  Many participants notice weight loss and improved body
+                  composition within just two weeks.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-12 md:py-24 bg-primary text-primary-foreground">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+                  Ready to Transform Your Health?
+                </h2>
+                <p className="mx-auto max-w-[700px] md:text-xl">
+                  Join thousands who have successfully completed the 2-week no
+                  sugar challenge
+                </p>
+              </div>
+              <div className="space-x-4">
+                <Link href="/sign-up">
+                  <Button size="lg" variant="secondary" className="mt-4">
+                    Start Your Challenge Today
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="border-t bg-background">
+        <div className="container flex flex-col gap-2 py-6 md:flex-row md:items-center md:justify-between">
+          <p className="text-center text-sm text-muted-foreground md:text-left">
+            © 2025 ElevateHealth. All rights reserved.
+          </p>
+          <div className="flex items-center justify-center gap-4 md:justify-end">
+            <Link
+              href="/sign-in"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Join Challenge
+            </Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
