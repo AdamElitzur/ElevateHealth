@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { getDailyLogs } from '@/app/actions/daily-log';
 import DailyLogForm from './daily-log-form';
 
+interface DailyLogFormProps {
+  onSuccess?: () => void;
+}
+
 export default function DailyLogPage() {
   const [showForm, setShowForm] = useState(false);
   const [logs, setLogs] = useState<Awaited<ReturnType<typeof getDailyLogs>>>([]);
@@ -28,7 +32,7 @@ export default function DailyLogPage() {
   };
 
   // Initial load
-  useState(() => {
+  useEffect(() => {
     loadLogs();
   }, []);
 
@@ -91,16 +95,13 @@ export default function DailyLogPage() {
                 </div>
               ))}
             </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8">
-            No entries yet. Add your first meal or snack above.
+            No entries yet. Click 'Add Entry' to log your first meal or note.
           </p>
         )}
       </div>
     </div>
-  )
+  );
 }

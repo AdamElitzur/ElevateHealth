@@ -28,9 +28,10 @@ import { Clock, Utensils, Search } from "lucide-react";
 
 interface DailyLogFormProps {
   existingLog?: DailyLog | null;
+  onSuccess?: () => void;
 }
 
-export default function DailyLogForm({ existingLog = null }: DailyLogFormProps) {
+export default function DailyLogForm({ existingLog = null, onSuccess }: DailyLogFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const today = format(new Date(), "yyyy-MM-dd");
@@ -216,8 +217,14 @@ export default function DailyLogForm({ existingLog = null }: DailyLogFormProps) 
       await createDailyLog(formData);
       setSuccess("Meal logged successfully!");
       resetForm();
-      // Refresh the page to show the new log in the list
-      router.refresh();
+      
+      // Call the onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        // Fallback to page refresh if no onSuccess callback
+        router.refresh();
+      }
     } catch (err) {
       console.error("Error saving meal log:", err);
       setError("Failed to log meal. Please try again.");
