@@ -21,7 +21,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-x-4">
-                <Link href="/sign-up">
+                <Link href="/dashboard">
                   <Button size="lg" className="mt-4">
                     Start Your Challenge
                   </Button>
@@ -194,7 +194,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-x-4">
-                <Link href="/sign-up">
+                <Link href="/dashboard">
                   <Button size="lg" variant="secondary" className="mt-4">
                     Start Your Challenge Today
                   </Button>
@@ -212,16 +212,16 @@ export default function Home() {
           </p>
           <div className="flex items-center justify-center gap-4 md:justify-end">
             <Link
-              href="/sign-in"
+              href="/dashboard"
               className="text-sm text-muted-foreground hover:underline"
             >
-              Sign In
+              Dashboard
             </Link>
             <Link
-              href="/sign-up"
+              href="/bioage-analysis"
               className="text-sm text-muted-foreground hover:underline"
             >
-              Join Challenge
+              BioAge Analysis
             </Link>
           </div>
         </div>

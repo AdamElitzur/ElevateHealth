@@ -1,5 +1,3 @@
-import { getSession } from "../actions/auth";
-import { redirect } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -8,21 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import OnboardingForm from "./onboarding-form";
-import { getUserProfile } from "../actions/user-profile";
 
-export default async function OnboardingPage() {
-  const session = await getSession();
-
-  if (!session) {
-    redirect("/sign-in");
-  }
-
-  const userProfile = await getUserProfile();
-
-  // If user already has a profile, redirect to dashboard
-  if (userProfile && userProfile.gender && userProfile.age) {
-    redirect("/dashboard");
-  }
+export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
