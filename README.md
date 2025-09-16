@@ -2,6 +2,8 @@
 
 ElevateHealth is a comprehensive health analytics platform that combines food analysis, barcode scanning, and biological age assessment to help users make informed health decisions.
 
+![Dashboard Screenshot](/public/dashboard-screenshot.png)
+
 ## 🚀 Features
 
 ### 🍎 Food Analytics
